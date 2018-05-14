@@ -50,7 +50,7 @@ public class Remote implements RemoteObserver{
 
 	@Override
 	public String toString() {
-		return "Remote [id=" + id + ", frequency=" + frequency + "]";
+		return "Remote " + id;
 	}
 
 }

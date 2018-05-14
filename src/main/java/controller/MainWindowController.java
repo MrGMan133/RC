@@ -1,6 +1,7 @@
 package controller;
 
 
+import java.io.IOException;
 import java.util.List;
 
 import org.omg.CORBA.INITIALIZE;
@@ -15,7 +16,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.stage.Stage;
 import model.Remote;
 import model.RemoteObserver;
 import persistency.GenericDAO;
@@ -55,7 +60,17 @@ public class MainWindowController {
 
     @FXML
     void OpenManagerWindow(ActionEvent event) {
-
+    	try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/ManagerView.fxml"));
+			Parent root = (Parent) loader.load();
+			Stage stage = new Stage();
+			stage.setTitle("Remote Manager");
+			stage.setScene(new Scene(root, 450, 450));
+			stage.show();
+		} catch (IOException e) {
+			//add logging
+			e.printStackTrace();
+		}
     }
 
     @FXML

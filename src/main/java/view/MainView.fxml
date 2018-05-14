@@ -8,8 +8,8 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainWindowController">
    <children>
-      <JFXButton fx:id="ButtonOpenRemoteWindow" buttonType="RAISED" layoutX="24.0" layoutY="379.0" onAction="#OpenRemoteWindow" ripplerFill="WHITE" style="-fx-background-color: #2196f3;" text="Remote" textFill="WHITE" AnchorPane.leftAnchor="3.0" AnchorPane.topAnchor="3.0" />
-      <JFXButton fx:id="ButtonOpenManagerWindow" buttonType="RAISED" layoutX="479.0" layoutY="382.0" onAction="#OpenManagerWindow" ripplerFill="WHITE" style="-fx-background-color: #2196f3;" text="Manager" textFill="WHITE" AnchorPane.leftAnchor="73.0" AnchorPane.topAnchor="3.0" />
+      <JFXButton fx:id="ButtonOpenRemoteWindow" buttonType="RAISED" layoutX="24.0" layoutY="379.0" onAction="#OpenRemoteWindow" ripplerFill="WHITE" style="-fx-background-color: #2196f3;" text="Remote" textFill="WHITE" AnchorPane.leftAnchor="220.0" AnchorPane.topAnchor="5.0" />
+      <JFXButton fx:id="ButtonOpenManagerWindow" buttonType="RAISED" layoutX="350.0" layoutY="3.0" onAction="#OpenManagerWindow" ripplerFill="WHITE" style="-fx-background-color: #2196f3;" text="Manager" textFill="WHITE" AnchorPane.rightAnchor="220.0" AnchorPane.topAnchor="5.0" />
       <JFXListView fx:id="LVRemotesMV" layoutX="3.0" style="-fx-background-color: #ffffff;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="350.0" AnchorPane.topAnchor="45.0" />
       <Label layoutX="286.0" layoutY="77.0" text="Remote" AnchorPane.leftAnchor="280.0" AnchorPane.topAnchor="45.0">
          <font>
