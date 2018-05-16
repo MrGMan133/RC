@@ -5,7 +5,7 @@ import java.util.List;
 
 public class UserManager {
 	private double frequency;
-	private List<RemoteObserver> remotesToUpdate = new ArrayList<RemoteObserver>();
+	private List<Remote> remotesToUpdate = new ArrayList<Remote>();
 	
 	public double getFrequency() {
 		return frequency;
@@ -13,7 +13,7 @@ public class UserManager {
 	public void setFrequency(double frequency) {
 		this.frequency = frequency;
 	}
-	public List<RemoteObserver> getRemotesToUpdate() {
+	public List<Remote> getRemotesToUpdate() {
 		return remotesToUpdate;
 	}
 	public void addRemote(Remote remoteToAdd) {

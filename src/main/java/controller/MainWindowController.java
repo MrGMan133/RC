@@ -4,7 +4,8 @@ package controller;
 import java.io.IOException;
 import java.util.List;
 
-import org.omg.CORBA.INITIALIZE;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
@@ -26,6 +27,7 @@ import model.RemoteObserver;
 import persistency.GenericDAO;
 
 public class MainWindowController {
+	static final Logger logger = LogManager.getLogger(MainWindowController.class.getName());
 	private App app;
 	private GenericDAO<Remote> remoteDao = new GenericDAO<Remote>(Remote.class);
 	private ObservableList<Remote> remoteData = FXCollections.observableArrayList();
@@ -34,6 +36,9 @@ public class MainWindowController {
 
     @FXML
     private JFXButton ButtonOpenManagerWindow;
+    
+    @FXML
+    private JFXButton ButtonRefresh;
 
     @FXML
     private JFXListView<Remote> LVRemotesMV;
@@ -65,28 +70,36 @@ public class MainWindowController {
 			Parent root = (Parent) loader.load();
 			Stage stage = new Stage();
 			stage.setTitle("Remote Manager");
-			stage.setScene(new Scene(root, 450, 450));
+			stage.setScene(new Scene(root));
 			stage.show();
 		} catch (IOException e) {
 			//add logging
 			e.printStackTrace();
 		}
+    	this.setListFromDb();
     }
 
     @FXML
     void OpenRemoteWindow(ActionEvent event) {
 
     }
+    
+    @FXML
+    void RefreshList(ActionEvent event) {
+    	this.setListFromDb();
+    }
+    
     public void setApp(App app) {
     	this.app = app;
     }
-    private void setListFromDb() {
+    protected void setListFromDb() {
     	LVRemotesMV.getItems().clear();
     	List<Remote> source = remoteDao.findAll();
     	for(Remote remote : source) {
     		remoteData.add(remote);
     	}
     	LVRemotesMV.setItems(remoteData);
+    	logger.info("Items loaded from database: " + source.size());
     }
     private void showRemoteDetails(Remote remote) {
     	
