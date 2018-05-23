@@ -25,7 +25,7 @@ public class GenericDAO<T> {
 	 */
 	
 	@SuppressWarnings("unchecked")
-	public T findOne(final int id) {
+	public T findOne(final long id) {
 		EntityManager manager = factory.createEntityManager();
 		EntityTransaction transaction = manager.getTransaction();
 	    Object obj = null;

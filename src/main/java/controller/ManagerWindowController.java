@@ -2,16 +2,15 @@ package controller;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextField;
-import com.jfoenix.controls.JFXButton.ButtonType;
 
 import galekop.be.RC.App;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -21,8 +20,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Label;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import model.Gate;
 import model.Remote;
 import model.UserManager;
 import persistency.GenericDAO;
@@ -30,10 +32,14 @@ import persistency.GenericDAO;
 public class ManagerWindowController {
 	private App app;
 	private UserManager userManager = new UserManager();
+	private Gate gate = new Gate();
 	private QuestionDialogController deleteMessageController;
-	private MainWindowController mainWindowController;
+	private List<Remote> sourceIsActive;
 	private GenericDAO<Remote> remoteDao = new GenericDAO<Remote>(Remote.class);
+	private GenericDAO<UserManager> userManagerDao = new GenericDAO<UserManager>(UserManager.class);
+	private GenericDAO<Gate> gateDao = new GenericDAO<Gate>(Gate.class);
 	private ObservableList<Remote> remoteData = FXCollections.observableArrayList();
+	static final Logger logger = LogManager.getLogger(ManagerWindowController.class.getName());
 	@FXML
     private AnchorPane ActivateRemote;
 
@@ -58,12 +64,39 @@ public class ManagerWindowController {
     @FXML
     private JFXButton ButtonUpdateFrequency;
     
+    @FXML
+    private JFXButton ButtonRequest;
+    
+    @FXML
+    private Label LabelFrequency;
+    
+    @FXML
+    private ToggleButton ToggleGate;
+    
     public void initialize() {
+    	this.setUserManager();
+    	this.setGate();
     	this.setListFromDb();
+    	LabelFrequency.setText(userManager.toString());
     }
-
+    public void setApp(App app) {
+    	this.app = app;
+    }
+    private void setUserManager() {
+    	this.userManager = userManagerDao.findOne(1);
+    	logger.info("User Manager: " + this.userManager.toString());
+    }
+    private void setGate() {
+    	this.gate = gateDao.findOne(1);
+    	logger.info("Gate: " + this.gate.toString());
+    }
     private void setListFromDb() {
     	LVAllRemotes.getItems().clear();
+    	sourceIsActive = remoteDao.executeNamedQuery("Remote.findIsActive");
+    	for (Remote remote : sourceIsActive) {
+    		userManager.addRemoteToList(remote);
+		}
+    	logger.info("Items loaded from database and added to Active List: " + sourceIsActive.size());
     	List<Remote> source = remoteDao.findAll();
     	for(Remote remote : source) {
     		remoteData.add(remote);
@@ -105,14 +138,16 @@ public class ManagerWindowController {
 				if (!selectedRemote.isActive()) {
 					userManager.addRemote(selectedRemote);
 					remoteDao.update(selectedRemote);
+					logger.info("Remote: " + selectedRemote.toString() + " activated.");
+					this.setListFromDb();
 				}
-			} 
+			}
 		} else {
             // Nothing selected.
 	        Alert alert = new Alert(AlertType.WARNING);
 	        alert.setTitle("No Selection");
-	        alert.setHeaderText("No Person Selected");
-	        alert.setContentText("Please select a person in the table.");
+	        alert.setHeaderText("No remote Selected");
+	        alert.setContentText("Please select a remote in the table.");
 	        alert.showAndWait();
     	}
     }
@@ -133,14 +168,22 @@ public class ManagerWindowController {
 				if (selectedRemote.isActive()) {
 					userManager.removeRemote(selectedRemote);
 					remoteDao.update(selectedRemote);
+					logger.info("Remote: " + selectedRemote.toString() + " de-activated.");
+				}else {
+			        Alert alert = new Alert(AlertType.WARNING);
+			        alert.setTitle("Already Deactive");
+			        alert.setHeaderText("Already Deactive");
+			        alert.setContentText("This remote is already deactivated");
+			        alert.showAndWait();
 				}
+				this.setListFromDb();
 			} 
 		} else {
             // Nothing selected.
 	        Alert alert = new Alert(AlertType.WARNING);
 	        alert.setTitle("No Selection");
-	        alert.setHeaderText("No Person Selected");
-	        alert.setContentText("Please select a person in the table.");
+	        alert.setHeaderText("No remote Selected");
+	        alert.setContentText("Please select a remote in the table.");
 	        alert.showAndWait();
     	}
     }
@@ -153,26 +196,77 @@ public class ManagerWindowController {
         	if (okClicked) {
         		remoteDao.delete(selectedRemote);
         		remoteData.remove(selectedRemote);
+        		logger.info("Remote: " + selectedRemote.toString() + " removed.");
 			}
     	}else {
             // Nothing selected.
 	        Alert alert = new Alert(AlertType.WARNING);
 	        alert.setTitle("No Selection");
-	        alert.setHeaderText("No Person Selected");
-	        alert.setContentText("Please select a person in the table.");
+	        alert.setHeaderText("No remote selected");
+	        alert.setContentText("Please select a remote in the table.");
 	        alert.showAndWait();
     	}
+    	this.setListFromDb();
     }
 
     @FXML
     void UpdateFrequency(ActionEvent event) {
     	if (this.isTextValid()) {
 			try {
-				userManager.updateFrequency(Double.parseDouble(TFNewFrequency.getText()));
+				this.setListFromDb();
+				Double updateFrequency = Double.parseDouble(TFNewFrequency.getText()); 
+				userManager.updateFrequency(updateFrequency);
+				//List<Remote> activeList = userManager.getRemotesToUpdate();
+				for (Remote remote : sourceIsActive) {
+					remoteDao.update(remote);
+					logger.info("Update: " + remote.getFrequency());
+				}
+				gate.updateFrequency(updateFrequency);
+				gateDao.update(gate);
+				logger.info("New frequency: " + updateFrequency);
 			} catch (Exception e) {
 				TFNewFrequency.setPromptText("Please enter a correct value");
 			}
+			this.setListFromDb();
+			TFNewFrequency.clear();
+			TFNewFrequency.setPromptText("New frequency");
+			LabelFrequency.setText(userManager.toString());
+			userManagerDao.update(userManager);
 		}
+    }
+    
+
+    @FXML
+    void RequestOpen(ActionEvent event) {
+    	Remote selectedRemote = LVAllRemotes.getSelectionModel().getSelectedItem();
+    	if(selectedRemote != null) {
+    		if (gate.handleRequest(selectedRemote.getFrequency(), selectedRemote.isActive())) {
+    			if (ToggleGate.getText() == "Open") {
+    				ToggleGate.setText("Closed");
+        			ToggleGate.setSelected(false);
+        			logger.info("Closing gate");
+				}else {
+					ToggleGate.setText("Open");
+	    			ToggleGate.setSelected(true);
+	    			logger.info("Opening gate");
+				}
+    			logger.info("Good frequency & RC is active");
+			}else {
+				Alert alert = new Alert(AlertType.WARNING);
+		        alert.setTitle("Warning");
+		        alert.setHeaderText("This is not allowed");
+		        alert.setContentText("Either the frequency is incorrect or the remote is not active.");
+		        alert.showAndWait();
+			}
+    	}else {
+            // Nothing selected.
+	        Alert alert = new Alert(AlertType.WARNING);
+	        alert.setTitle("No Selection");
+	        alert.setHeaderText("No remote selected");
+	        alert.setContentText("Please select a remote in the table.");
+	        alert.showAndWait();
+    	}
+    	this.setListFromDb();
     }
 
 }

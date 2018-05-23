@@ -5,10 +5,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 @Entity
 @Table(name="remotes")
+@NamedQuery(
+		name = "Remote.findIsActive",
+		query = "SELECT r FROM Remote r WHERE r.isActive = true")
 public class Remote implements RemoteObserver{
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -50,7 +54,7 @@ public class Remote implements RemoteObserver{
 
 	@Override
 	public String toString() {
-		return "Remote " + id;
+		return "Remote " + id + " - Frequency: " + frequency + " - Is Active: " + isActive;
 	}
 
 }

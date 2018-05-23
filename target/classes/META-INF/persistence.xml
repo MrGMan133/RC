@@ -4,7 +4,8 @@
              version="2.0" xmlns="http://java.sun.com/xml/ns/persistence">
     <persistence-unit name="remoteTable" transaction-type="RESOURCE_LOCAL">
         <class>model.Remote</class>
-
+		<class>model.UserManager</class>
+		<class>model.Gate</class>
         <properties>
             <property name= "javax.persistence.jdbc.url" value= "jdbc:mysql://192.168.1.16:3306/rc" />
             <property name= "javax.persistence.jdbc.user" value= "Olaf" />

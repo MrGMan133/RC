@@ -2,7 +2,7 @@ package galekop.be.RC;
 
 import java.io.IOException;
 
-import controller.MainWindowController;
+import controller.ManagerWindowController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -24,13 +24,13 @@ public class App extends Application
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/MainView.fxml"));
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/ManagerView.fxml"));
 			AnchorPane page = (AnchorPane)loader.load();
 			Scene scene = new Scene(page);
 			primaryStage.setScene(scene);
 			primaryStage.setTitle("Remote Control Manager");
 			primaryStage.show();
-			MainWindowController controller = loader.getController();
+			ManagerWindowController controller = loader.getController();
 			controller.setApp(this);
 		} catch (IOException e) {
 			e.printStackTrace();
