@@ -11,7 +11,7 @@ import javax.persistence.Transient;
 
 @Entity
 @Table(name = "userManager")
-public class UserManager {
+public class UserManager implements SubjectInterface{
 	@Id
 	private long iduserManager;
 	@Column(name="frequency")
