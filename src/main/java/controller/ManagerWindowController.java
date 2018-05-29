@@ -73,6 +73,9 @@ public class ManagerWindowController {
     @FXML
     private ToggleButton ToggleGate;
     
+    @FXML
+    private JFXButton ButtonAdd10Remotes;
+    
     public void initialize() {
     	this.setUserManager();
     	this.setGate();
@@ -240,7 +243,7 @@ public class ManagerWindowController {
     void RequestOpen(ActionEvent event) {
     	Remote selectedRemote = LVAllRemotes.getSelectionModel().getSelectedItem();
     	if(selectedRemote != null) {
-    		if (gate.handleRequest(selectedRemote.getFrequency(), selectedRemote.isActive())) {
+    		if (selectedRemote.sendRequest(gate)) {
     			if (ToggleGate.getText() == "Open") {
     				ToggleGate.setText("Closed");
         			ToggleGate.setSelected(false);
@@ -267,6 +270,16 @@ public class ManagerWindowController {
 	        alert.showAndWait();
     	}
     	this.setListFromDb();
+    }
+    
+
+    @FXML
+    void Add10Remotes(ActionEvent event) {
+    	for (int i = 0; i < 10; i++) {
+    		Remote remote = new Remote();
+        	this.getRemoteData().add(remote);
+        	remoteDao.create(remote);
+		}
     }
 
 }

@@ -4,7 +4,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="114.0" prefWidth="321.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.QuestionDialogController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="114.0" prefWidth="321.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
    <children>
       <Label fx:id="labelRemove" layoutX="14.0" layoutY="14.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="20.0" />
       <JFXButton fx:id="ButtonOK" buttonType="RAISED" layoutX="14.0" layoutY="60.0" onAction="#OKDeleteRemote" ripplerFill="WHITE" style="-fx-background-color: #2196f3;" text="OK" textFill="WHITE" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="60.0" />

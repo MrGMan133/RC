@@ -7,10 +7,10 @@
 		<class>model.UserManager</class>
 		<class>model.Gate</class>
         <properties>
-            <property name= "javax.persistence.jdbc.url" value= "jdbc:mysql://192.168.1.16:3306/rc" />
+            <!--<property name= "javax.persistence.jdbc.url" value= "jdbc:mysql://mysql.galekop.be:4206/rc?useSSL=false" />  -->
+			<property name= "javax.persistence.jdbc.url" value= "jdbc:mysql://mysql.galekop.be:3306/rc?useSSL=false" />
             <property name= "javax.persistence.jdbc.user" value= "Olaf" />
             <property name= "javax.persistence.jdbc.password" value= "Jumbojet01." />
-            <property name= "javax.persistence.jdbc.driver" value= "com.mysql.jdbc.Driver"/>
             <property name= "eclipselink.logging.level" value= "FINE"/>
             <property name= "eclipselink.ddl-generation" value= "create-tables"/>
             <property name= "hibernate.enable_lazy_load_no_trans" value= "true" />
